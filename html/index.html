@@ -1,0 +1,481 @@
+<!DOCTYPE html> <html lang="hu"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iskolai Információs Oldal</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    html,
+    body {
+        min-height: 100%;
+    }
+
+    body {
+        background-color: #f4f6f8;
+        color: #222;
+    }
+
+    /* =========================
+       BAL OLDALI MENÜ
+    ========================= */
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 240px;
+        height: 100vh;
+
+        background: #5f3e1e;
+        color: white;
+
+        padding: 25px 15px;
+
+        overflow-y: auto;
+    }
+
+    .sidebar h2 {
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 24px;
+    }
+
+    .menu-button {
+        display: block;
+
+        width: 100%;
+        padding: 14px 15px;
+        margin-bottom: 10px;
+
+        border: none;
+        border-radius: 8px;
+
+        background: transparent;
+        color: white;
+
+        text-align: left;
+        font-size: 16px;
+
+        cursor: pointer;
+
+        transition: background-color 0.2s ease,
+                    transform 0.2s ease;
+    }
+
+   
+
+    .menu-button.active {
+        background: #312f96;
+    }
+
+    /* =========================
+       FŐ TARTALOM
+    ========================= */
+
+    .content {
+        margin-left: 240px;
+        width: calc(100% - 240px);
+        min-height: 100vh;
+
+        padding: 40px;
+    }
+
+    .page {
+        display: none;
+        animation: fadeIn 0.25s ease;
+    }
+
+    .page.active {
+        display: block;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(5px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* =========================
+       KEZDŐLAP
+    ========================= */
+
+    .welcome {
+        background: white;
+
+        padding: 40px;
+
+        border-radius: 15px;
+
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .welcome h1 {
+        color: #1e3a5f;
+        margin-bottom: 20px;
+        font-size: 32px;
+    }
+
+    .welcome p {
+        font-size: 18px;
+        line-height: 1.7;
+    }
+
+    /* =========================
+       OLDALCÍMEK
+    ========================= */
+
+    .page h1 {
+        color: #1e3a5f;
+        margin-bottom: 20px;
+    }
+
+    /* =========================
+       ÓRAREND
+    ========================= */
+
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+        border-radius: 10px;
+    }
+
+    .schedule {
+        width: 100%;
+        min-width: 700px;
+
+        border-collapse: collapse;
+
+        background: white;
+
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .schedule th,
+    .schedule td {
+        padding: 15px;
+
+        border: 1px solid #ddd;
+
+        text-align: center;
+    }
+
+    .schedule th {
+        background: #1e3a5f;
+        color: white;
+    }
+
+    .schedule tbody tr:nth-child(even) {
+        background: #f5f5f5;
+    }
+
+    .schedule tbody tr:hover {
+        background: #eaf1f8;
+    }
+
+    /* =========================
+       TÉRKÉP
+    ========================= */
+
+    .map {
+        width: 100%;
+        height: 500px;
+
+        background: #dce6ed;
+
+        border-radius: 15px;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        color: #555;
+        font-size: 22px;
+
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .map-content {
+        text-align: center;
+    }
+
+    .map-content .map-icon {
+        display: block;
+        font-size: 60px;
+        margin-bottom: 15px;
+    }
+
+    /* =========================
+       INFORMÁCIÓ
+    ========================= */
+
+    .info-box {
+        background: white;
+
+        padding: 30px;
+
+        border-radius: 15px;
+
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    }
+
+    .info-box h3 {
+        color: #1e3a5f;
+        margin-bottom: 15px;
+    }
+
+    .info-box p {
+        margin-bottom: 10px;
+        line-height: 1.7;
+    }
+
+    /* =========================
+       MOBIL NÉZET
+    ========================= */
+
+    @media (max-width: 700px) {
+
+        .sidebar {
+            width: 190px;
+            padding: 20px 10px;
+        }
+
+        .sidebar h2 {
+            font-size: 20px;
+        }
+
+        .menu-button {
+            font-size: 14px;
+            padding: 12px;
+        }
+
+        .content {
+            margin-left: 190px;
+            width: calc(100% - 190px);
+
+            padding: 20px;
+        }
+
+        .welcome {
+            padding: 25px;
+        }
+
+        .welcome h1 {
+            font-size: 26px;
+        }
+
+        .welcome p {
+            font-size: 16px;
+        }
+
+        .map {
+            height: 350px;
+        }
+    }
+
+    /* EXTRA KIS KÉPERNYŐ */
+    @media (max-width: 500px) {
+
+        .sidebar {
+            width: 150px;
+        }
+
+        .content {
+            margin-left: 150px;
+            width: calc(100% - 150px);
+            padding: 15px;
+        }
+
+        .sidebar h2 {
+            font-size: 18px;
+        }
+
+        .menu-button {
+            font-size: 13px;
+        }
+
+        .welcome {
+            padding: 20px;
+        }
+    }
+</style>
+
+</head> <body>
+<!-- =========================
+     BAL OLDALI MENÜ
+========================= -->
+
+<aside class="sidebar">
+
+    <h2>Menü</h2>
+
+    <button
+        type="button"
+        class="menu-button active"
+        onclick="showPage('home', this)"
+    >
+        🏠 Kezdőlap
+    </button>
+
+ 
+    <button
+        type="button"
+        class="menu-button"
+        onclick="showPage('map', this)"
+    >
+        🗺️ Térkép
+    </button>
+
+    <button
+        type="button"
+        class="menu-button"
+        onclick="showPage('info', this)"
+    >
+        ℹ️ Egyéb információ
+    </button>
+
+</aside>
+
+
+<!-- =========================
+     FŐ TARTALOM
+========================= -->
+
+<main class="content">
+
+    <!-- KEZDŐLAP -->
+
+    <section id="home" class="page active">
+
+        <div class="welcome">
+
+            <h1>Üdvözlünk az Umszki oldalán!</h1>
+
+            <p>
+                Üdvözlünk az iskolai információs oldalon!
+                Itt egy helyen megtalálod az órarendet,
+                a térképet és minden fontos információt.
+            </p>
+
+            <br>
+
+            <p>
+                A bal oldali menü segítségével könnyedén
+                kiválaszthatod, hogy melyik információt
+                szeretnéd megtekinteni.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    
+
+    <!-- TÉRKÉP -->
+
+    <section id="map" class="page">
+
+        <h1>Térkép</h1>
+
+        <div class="map">
+
+            <div class="map-content">
+
+                <span class="map-icon">🗺️</span>
+
+                <p>
+                    Ide kerül majd a térkép.
+                </p>
+
+                <p>
+                    <small>
+                        Később ide beilleszthető egy
+                        interaktív térkép.
+                    </small>
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- EGYÉB INFORMÁCIÓ -->
+
+    <section id="info" class="page">
+
+        <h1>Egyéb információk</h1>
+
+        <div class="info-box">
+
+            <h3>Fontos információk</h3>
+
+            <p>
+                Ide kerülhetnek az iskola, épület vagy
+                rendezvény fontos információi.
+            </p>
+
+         
+
+            
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+    function showPage(pageId, button) {
+
+        // Az összes oldal elrejtése
+        const pages = document.querySelectorAll(".page");
+
+        pages.forEach(function(page) {
+            page.classList.remove("active");
+        });
+
+
+        // A kiválasztott oldal megjelenítése
+        const selectedPage = document.getElementById(pageId);
+
+        if (selectedPage) {
+            selectedPage.classList.add("active");
+        }
+
+
+        // Az összes menügomb inaktiválása
+        const buttons = document.querySelectorAll(".menu-button");
+
+        buttons.forEach(function(btn) {
+            btn.classList.remove("active");
+        });
+
+
+        // A kiválasztott menügomb aktiválása
+        if (button) {
+            button.classList.add("active");
+        }
+
+    }
+
+</script>
+
+</body> </html>
