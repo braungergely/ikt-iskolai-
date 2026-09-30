@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>UMSZKI - Iskolai Információs Oldal</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        body {
+            background: #f4f6f8;
+            color: #222;
+        }
+
+
+        /* =====================================================
+           BAL OLDALI MENÜ
+        ===================================================== */
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+
+            width: 240px;
+            height: 100vh;
+
+            background: #5f3e1e;
+            color: white;
+
+            padding: 25px 15px;
+
+            overflow-y: auto;
+
+            z-index: 1000;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .menu-button {
+            display: block;
+
+            width: 100%;
+
+            padding: 14px 15px;
+
+            margin-bottom: 10px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: transparent;
+            color: white;
+
+            text-align: left;
+
+            font-size: 16px;
+
+            cursor: pointer;
+
+            transition:
+                background-color 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .menu-button:hover {
+            background: #7a542c;
+        }
+
+        .menu-button.active {
+            background: #312f96;
+        }
+
+
+        /* =====================================================
+           FŐ TARTALOM
+        ===================================================== */
+
+        .content {
+            margin-left: 240px;
+
+            width: calc(100% - 240px);
+
+            min-height: 100vh;
+
+            padding: 40px;
+        }
+
+        .page {
+            display: none;
+
+            animation: fadeIn 0.25s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* =====================================================
+           KEZDŐLAP
+        ===================================================== */
+
+        .welcome {
+            background: white;
+
+            padding: 40px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .welcome h1 {
+            color: #1e3a5f;
+
+            margin-bottom: 20px;
+
+            font-size: 32px;
+        }
+
+        .welcome p {
+            font-size: 18px;
+
+            line-height: 1.7;
+        }
+
+
+        /* =====================================================
+           OLDALCÍMEK
+        ===================================================== */
+
+        .page > h1 {
+            color: #1e3a5f;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =====================================================
+           ISKOLA INFORMÁCIÓ
+        ===================================================== */
+
+        .school-info {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(230px, 1fr));
+
+            gap: 15px;
+        }
+
+        .info-card {
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            border-left: 5px solid #0284c7;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .info-card strong {
+            display: block;
+
+            color: #0369a1;
+
+            margin-bottom: 8px;
+        }
+
+
+        /* =====================================================
+           ÓRAREND
+        ===================================================== */
+
+        .schedule-box {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .controls {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 25px;
+        }
+
+        .controls label {
+            font-weight: bold;
+
+            color: #1e3a5f;
+        }
+
+        select,
+        input {
+            padding: 12px 15px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            outline: none;
+
+            background: white;
+        }
+
+        select:focus,
+        input:focus {
+            border-color: #0284c7;
+
+            box-shadow:
+                0 0 0 3px rgba(2, 132, 199, 0.1);
+        }
+
+        .table-container {
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 850px;
+        }
+
+        th {
+            background: #0284c7;
+
+            color: white;
+
+            padding: 15px;
+        }
+
+        td {
+            padding: 14px;
+
+            text-align: center;
+
+            border-bottom:
+                1px solid #e2e8f0;
+        }
+
+        tr:hover td {
+            background: #f0f9ff;
+        }
+
+        .ora {
+            font-weight: bold;
+
+            color: #0369a1;
+        }
+
+        .idopont {
+            white-space: nowrap;
+
+            font-weight: bold;
+        }
+
+        .tantargy {
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           KÁRTYÁK
+        ===================================================== */
+
+        .card-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(230px, 1fr));
+
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            border-left: 5px solid #0284c7;
+
+            transition: 0.2s;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 {
+            color: #0369a1;
+
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #475569;
+
+            margin-top: 6px;
+        }
+
+        .badge {
+            display: inline-block;
+
+            background: #e0f2fe;
+
+            color: #0369a1;
+
+            padding: 5px 9px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            margin-top: 10px;
+        }
+
+        .search {
+            width: 100%;
+
+            margin-bottom: 15px;
+        }
+
+        .count {
+            color: #64748b;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* =====================================================
+           TÉRKÉP
+        ===================================================== */
+
+        .map {
+            width: 100%;
+
+            height: 500px;
+
+            background: #dce6ed;
+
+            border-radius: 15px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            color: #555;
+
+            font-size: 22px;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .map-content {
+            text-align: center;
+        }
+
+        .map-icon {
+            display: block;
+
+            font-size: 60px;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* =====================================================
+           INFORMÁCIÓ
+        ===================================================== */
+
+        .info-box {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .info-box h3 {
+            color: #1e3a5f;
+
+            margin-bottom: 15px;
+        }
+
+        .info-box p {
+            margin-bottom: 10px;
+
+            line-height: 1.7;
+        }
+
+
+        /* =====================================================
+           NAVIGÁCIÓ
+        ===================================================== */
+
+        .navigation-box {
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .navigation-box h3 {
+            color: #1e3a5f;
+
+            margin-bottom: 15px;
+        }
+
+        .route-button {
+            display: block;
+
+            width: 100%;
+
+            max-width: 400px;
+
+            padding: 15px;
+
+            margin-top: 12px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #312f96;
+
+            color: white;
+
+            font-size: 16px;
+
+            cursor: pointer;
+        }
+
+        .route-button:hover {
+            background: #252477;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            background: #0f172a;
+
+            color: white;
+
+            text-align: center;
+
+            padding: 25px;
+
+            margin-top: 50px;
+        }
+
+
+        /* =====================================================
+           MOBIL
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                width: 190px;
+
+                padding: 20px 10px;
+            }
+
+            .sidebar h2 {
+                font-size: 20px;
+            }
+
+            .menu-button {
+                font-size: 14px;
+
+                padding: 12px;
+            }
+
+            .content {
+                margin-left: 190px;
+
+                width: calc(100% - 190px);
+
+                padding: 20px;
+            }
+
+            .welcome {
+                padding: 25px;
+            }
+
+            .welcome h1 {
+                font-size: 26px;
+            }
+
+            .welcome p {
+                font-size: 16px;
+            }
+
+            .schedule-box {
+                padding: 20px;
+            }
+
+            .map {
+                height: 350px;
+            }
+
+        }
+
+
+        /* =====================================================
+           EXTRA KIS KÉPERNYŐ
+        ===================================================== */
+
+        @media (max-width: 500px) {
+
+            .sidebar {
+                width: 150px;
+            }
+
+            .content {
+                margin-left: 150px;
+
+                width: calc(100% - 150px);
+
+                padding: 15px;
+            }
+
+            .sidebar h2 {
+                font-size: 18px;
+            }
+
+            .menu-button {
+                font-size: 13px;
+            }
+
+            .welcome {
+                padding: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         BAL OLDALI MENÜ
+    ===================================================== -->
+
+    <aside class="sidebar">
+
+        <h2>UMSZKI</h2>
+
+
+        <button
+            type="button"
+            class="menu-button active"
+            onclick="showPage('home', this)"
+        >
+            🏠 Kezdőlap
+        </button>
+
+
+        <button
+            type="button"
+            class="menu-button"
+            onclick="showPage('orarend', this)"
+        >
+            📅 Órarend
+        </button>
+
+
+        <button
+            type="button"
+            class="menu-button"
+            onclick="showPage('map', this)"
+        >
+            🗺️ Térkép
+        </button>
+
+
+        <button
+            type="button"
+            class="menu-button"
+            onclick="showPage('info', this)"
+        >
+            ℹ️ Egyéb információ
+        </button>
+
+
+        <button
+            type="button"
+            class="menu-button"
+            onclick="showPage('nav', this)"
+        >
+            🧭 Navigáció
+        </button>
+
+    </aside>
+
+
+    <!-- =====================================================
+         FŐ TARTALOM
+    ===================================================== -->
+
+    <main class="content">
+
+
+        <!-- =================================================
+             KEZDŐLAP
+        ================================================= -->
+
+        <section id="home" class="page active">
+
+            <div class="welcome">
+
+                <h1>
+                    Üdvözlünk az UMSZKI oldalán!
+                </h1>
+
+                <p>
+                    Üdvözlünk az iskolai információs oldalon!
+                    Itt egy helyen megtalálod az órarendet,
+                    az iskola adatait, a térképet és minden
+                    fontos információt.
+                </p>
+
+                <br>
+
+                <p>
+                    A bal oldali menü segítségével könnyedén
+                    kiválaszthatod, hogy melyik információt
+                    szeretnéd megtekinteni.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             ÓRAREND
+        ================================================= -->
+
+        <section id="orarend" class="page">
+
+            <h1>
+                📅 Órarend
+            </h1>
+
+
+            <div class="schedule-box">
+
+                <div class="controls">
+
+                    <label for="osztaly">
+                        Osztály:
+                    </label>
+
+                    <select id="osztaly"></select>
+
+
+                    <label for="nap">
+                        Nap:
+                    </label>
+
+                    <select id="nap">
+
+                        <option value="hetfo">
+                            Hétfő
+                        </option>
+
+                        <option value="kedd">
+                            Kedd
+                        </option>
+
+                        <option value="szerda">
+                            Szerda
+                        </option>
+
+                        <option value="csutortok">
+                            Csütörtök
+                        </option>
+
+                        <option value="pentek">
+                            Péntek
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    id="orarendTabla"
+                    class="table-container">
+                </div>
+
+            </div>
+
+
+            <!-- OSZTÁLYOK -->
+
+            <div
+                style="
+                    background:white;
+                    margin-top:25px;
+                    padding:30px;
+                    border-radius:15px;
+                    box-shadow:0 4px 15px rgba(0,0,0,.08);
+                "
+            >
+
+                <h2>
+                    👨‍🎓 Osztályok
+                </h2>
+
+                <input
+                    class="search"
+                    type="text"
+                    id="osztalyKereses"
+                    placeholder="Osztály keresése..."
+                >
+
+                <p
+                    class="count"
+                    id="osztalyDarab">
+                </p>
+
+                <div
+                    id="osztalyLista"
+                    class="card-grid">
+                </div>
+
+            </div>
+
+
+            <!-- TANÁROK -->
+
+            <div
+                style="
+                    background:white;
+                    margin-top:25px;
+                    padding:30px;
+                    border-radius:15px;
+                    box-shadow:0 4px 15px rgba(0,0,0,.08);
+                "
+            >
+
+                <h2>
+                    👨‍🏫 Tanárok
+                </h2>
+
+                <input
+                    class="search"
+                    type="text"
+                    id="tanarKereses"
+                    placeholder="Tanár keresése..."
+                >
+
+                <p
+                    class="count"
+                    id="tanarDarab">
+                </p>
+
+                <div
+                    id="tanarLista"
+                    class="card-grid">
+                </div>
+
+            </div>
+
+
+            <!-- TERMEK -->
+
+            <div
+                style="
+                    background:white;
+                    margin-top:25px;
+                    padding:30px;
+                    border-radius:15px;
+                    box-shadow:0 4px 15px rgba(0,0,0,.08);
+                "
+            >
+
+                <h2>
+                    🚪 Termek
+                </h2>
+
+                <input
+                    class="search"
+                    type="text"
+                    id="teremKereses"
+                    placeholder="Terem vagy név keresése..."
+                >
+
+                <p
+                    class="count"
+                    id="teremDarab">
+                </p>
+
+                <div
+                    id="teremLista"
+                    class="card-grid">
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             TÉRKÉP
+        ================================================= -->
+
+        <section id="map" class="page">
+
+            <h1>
+                🗺️ Térkép
+            </h1>
+
+
+            <div class="map">
+
+                <div class="map-content">
+
+                    <span class="map-icon">
+                        🗺️
+                    </span>
+
+                    <p>
+                        Ide kerül majd az iskola térképe.
+                    </p>
+
+                    <br>
+
+                    <p>
+                        <small>
+                            Később ide beilleszthető
+                            egy interaktív térkép.
+                        </small>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             EGYÉB INFORMÁCIÓ
+        ================================================= -->
+
+        <section id="info" class="page">
+
+            <h1>
+                ℹ️ Egyéb információ
+            </h1>
+
+
+            <div class="info-box">
+
+                <h3>
+                    🏫 Iskola adatai
+                </h3>
+
+
+                <div class="school-info">
+
+                    <div class="info-card">
+
+                        <strong>
+                            Iskola
+                        </strong>
+
+                        BMSZC Újpesti Két Tanítási Nyelvű
+                        Műszaki Technikum
+
+                    </div>
+
+
+                    <div class="info-card">
+
+                        <strong>
+                            📍 Cím
+                        </strong>
+
+                        Görgey Artúr utca 26.<br>
+                        1041 Budapest, Hungary
+
+                    </div>
+
+
+                    <div class="info-card">
+
+                        <strong>
+                            📧 E-mail
+                        </strong>
+
+                        umszki@umszki.hu
+
+                    </div>
+
+
+                    <div class="info-card">
+
+                        <strong>
+                            📞 Telefon
+                        </strong>
+
+                        +36 1 369 6755
+
+                    </div>
+
+
+                    <div class="info-card">
+
+                        <strong>
+                            💻 Rendszer
+                        </strong>
+
+                        aSc EduPage
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <br>
+
+
+            <div class="info-box">
+
+                <h3>
+                    📌 Fontos információk
+                </h3>
+
+                <p>
+                    Ezen az oldalon megtalálható az iskola
+                    órarendje, az osztályok, a tanárok és
+                    a termek listája.
+                </p>
+
+                <p>
+                    A bal oldali menü segítségével lehet
+                    váltani az egyes oldalak között.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             NAVIGÁCIÓ
+        ================================================= -->
+
+        <section id="nav" class="page">
+
+            <h1>
+                🧭 Navigáció
+            </h1>
+
+
+            <div class="navigation-box">
+
+                <h3>
+                    Útvonal kiválasztása
+                </h3>
+
+
+                <p>
+                    Itt később kiválaszthatod,
+                    hogy melyik teremhez szeretnél
+                    eljutni.
+                </p>
+
+
+                <button
+                    class="route-button"
+                    onclick="showPage('map')"
+                >
+                    🗺️ Térkép megnyitása
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ===================================================== -->
+
+    <footer>
+
+        <p>
+            © 2026 UMSZKI
+        </p>
+
+    </footer>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ===================================================== -->
+
+    <script>
+
+
+        /* =================================================
+           OLDALVÁLTÁS
+        ================================================= */
+
+        function showPage(pageId, button) {
+
+            const pages =
+                document.querySelectorAll(".page");
+
+
+            pages.forEach(function(page) {
+
+                page.classList.remove("active");
+
+            });
+
+
+            const selectedPage =
+                document.getElementById(pageId);
+
+
+            if (selectedPage) {
+
+                selectedPage.classList.add("active");
+
+            }
+
+
+            const buttons =
+                document.querySelectorAll(".menu-button");
+
+
+            buttons.forEach(function(btn) {
+
+                btn.classList.remove("active");
+
+            });
+
+
+            if (button) {
+
+                button.classList.add("active");
+
+            }
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+        /* =================================================
+           OSZTÁLYOK
+        ================================================= */
+
+        const osztalyok = [
+
+            "9/Kny B-F",
+            "9/Kny C",
+
+            "9.A-M",
+            "9.B",
+            "9.C",
+            "9.D",
+            "9.J",
+            "9.F",
+            "9.G",
+
+            "10.A",
+            "10.M",
+            "10.B",
+            "10.C",
+            "10.D",
+            "10.F",
+            "10.G",
+
+            "11.A_AUT",
+            "11.A_ELT",
+            "11.B_AUT",
+            "11.B_ELT",
+            "11.C_IRAÜ",
+            "11.C_SZFT",
+            "11.D_IRAÜ",
+            "11.D_SZFT",
+            "11.I_IRAÜ",
+            "11.I_SZFT",
+            "11.E",
+            "11.F_GT",
+            "11.F_GépT",
+            "11.G_GT",
+            "11.G_GépT",
+            "11.G_MT",
+
+            "12.A_AUT",
+            "12.A_ELT",
+            "12.B_AUT",
+            "12.B_ELT",
+            "12.V_AUT",
+            "12.V_ELT",
+            "12.C_IRAÜ",
+            "12.C_SZFT",
+            "12.D_IRAÜ",
+            "12.D_SZFT",
+            "12.I_IRAÜ",
+            "12.I_SZFT",
+            "12.E",
+            "12.F",
+            "12.M",
+            "12.G_MT",
+            "12.G_GépT",
+
+            "13.A_AUT",
+            "13.A_ELT",
+            "13.B_AUT",
+            "13.B_ELT",
+            "13.C",
+            "13.D",
+            "13.I",
+            "13.E",
+            "13.F",
+            "13.G",
+
+            "Ksz/12.CN"
+
+        ];
+
+
+        /* =================================================
+           TANÁROK
+        ================================================= */
+
+        const tanarok = [
+
+            "Adyné Kulcsár Enikő",
+            "Andorfer János",
+            "Bakai Andrea",
+            "Barabás Botond",
+            "Baranné Hajdu Krisztina",
+            "Baross Márk",
+            "Barta Ilona",
+            "Barta Zoltán",
+            "Batóné Schulcz Ágnes",
+            "Bézi Barbara",
+            "Bíró Ildikó",
+            "Bodahelyi Éva",
+            "Bodó Antal",
+            "Böröczi Botond",
+            "Braun Éva",
+            "Buczkó Orsolya",
+            "Burai István",
+            "Bütösi Tamás",
+            "Csákfalvi Andrea",
+            "Demeter Alexander",
+            "Dobai Barna",
+            "Drofti Endre",
+            "Eördögh Imre",
+            "Erdei Éva",
+            "Farkas Ferenc",
+            "Fresz Péter",
+            "Frink Anikó",
+            "Gera Ildikó",
+            "Gulyás Ildikó",
+            "Hargitai Péter",
+            "Horváth János",
+            "Horváth Zoltán",
+            "Iván Tünde",
+            "Janusas Christopher Martynas",
+            "Juhász Róbert",
+            "Karácsony Éva",
+            "Karikó-Tóth Tamás",
+            "Kerekes Ottó",
+            "Keresztfalvi Katalin",
+            "Kis András",
+            "Kiss Csaba",
+            "Kluka Norbert",
+            "Kollár Zsófia",
+            "Kormos Gabriella",
+            "Kovács Ferenc",
+            "Kovács János",
+            "Kozma Dávid",
+            "Kriston Aranka",
+            "Kriston Dávid",
+            "Kudron Csaba",
+            "Kurdi Mónika",
+            "Lakatos Tibor",
+            "Lehotzky Tibor",
+            "Mackovic Andrea",
+            "Magyar Róbert",
+            "Matiscsák Zsuzsanna",
+            "Mészáros Péter",
+            "Mik Ibolya",
+            "Molnár Eszter",
+            "Molnárné Ettelt Andrea",
+            "Nagy Annamária",
+            "Nagy Ferenc",
+            "Nagy Henrietta",
+            "Nagy Krisztina",
+            "Nánási Gabriella",
+            "Nemes Szabina",
+            "Némethné Pallós Stefánia",
+            "Pócsik Fruzsina",
+            "Prófusz Magdolna",
+            "Puchreiner Márk",
+            "Roszkopf Helga",
+            "Schemadovics Zoltán",
+            "Schilling Ferenc",
+            "Schmieder László",
+            "Schuch-Takács Tímea",
+            "Seyfried Katalin",
+            "Soósné Varga Rozália",
+            "Szabó Kristóf",
+            "Szabó Zsuzsanna",
+            "Szász Dániel",
+            "Szőcs Vilmos",
+            "Szöllösi Brigitta",
+            "Takács Lilien",
+            "Tikász András",
+            "Tóth Irén",
+            "Tősér Tamás",
+            "Udvary Balázs",
+            "Vadai Tamás",
+            "Varga Artúr",
+            "Varga László",
+            "Végh Károly",
+            "Vidovenyecz Anikó",
+            "Vidra András",
+            "Widder László",
+            "Würfel Balázs",
+            "Zabari Tibor",
+            "Zachár Judit",
+            "Zettisné Németh Ivett",
+            "Ziegler Tünd"
+
+        ];
+
+
+        /* =================================================
+           TERMEK
+        ================================================= */
+
+        const termek = [
+
+            { szam: "4", nev: "" },
+            { szam: "5", nev: "Kluka Norbert" },
+            { szam: "9", nev: "Bézi Barbara" },
+            { szam: "10", nev: "Elektronika" },
+            { szam: "11", nev: "Barta Zoltán" },
+            { szam: "14", nev: "Karikó-Tóth Tamás" },
+            { szam: "16", nev: "Kiss Csaba" },
+            { szam: "17", nev: "Varga Artúr" },
+            { szam: "30", nev: "Vidra András" },
+            { szam: "31", nev: "Kriston Aranka" },
+            { szam: "33", nev: "Schmieder László" },
+            { szam: "34", nev: "Nagy Ferenc" },
+            { szam: "39", nev: "Gépész" },
+            { szam: "44", nev: "Juhász Róbert" },
+            { szam: "46", nev: "NYÁK Labor" },
+            { szam: "47", nev: "Fresz Péter" },
+            { szam: "48", nev: "Varga László" },
+            { szam: "52", nev: "Vadai Tamás" },
+            { szam: "57", nev: "Zabari Tibor" },
+            { szam: "58", nev: "" },
+            { szam: "59", nev: "Schilling Ferenc" },
+            { szam: "60", nev: "" },
+            { szam: "60E", nev: "" },
+            { szam: "63", nev: "Kriston Dávid" },
+
+            { szam: "113", nev: "Tanácsterem" },
+            { szam: "117", nev: "Seyfried Katalin" },
+            { szam: "119", nev: "Mackovic Andrea" },
+            { szam: "122", nev: "Schuch-Takács Tímea" },
+            { szam: "124", nev: "Tóth Irén" },
+            { szam: "126", nev: "Nagy Annamária" },
+            { szam: "127", nev: "Bakai Andrea" },
+            { szam: "129", nev: "Pócsik Fruzsina" },
+            { szam: "130", nev: "Kovács János" },
+            { szam: "131", nev: "Bíró Ildikó" },
+            { szam: "136", nev: "Szabó Zsuzsanna" },
+            { szam: "137", nev: "Varga László" },
+            { szam: "138", nev: "Demeter Alexander" },
+            { szam: "139", nev: "Horváth Zoltán" },
+            { szam: "143", nev: "Pneumatika" },
+            { szam: "147", nev: "Kudron Csaba" },
+            { szam: "148", nev: "Horváth Zoltán" },
+            { szam: "149", nev: "" },
+
+            { szam: "181", nev: "Bodahelyi Éva" },
+            { szam: "182", nev: "Hegyiné Z. Szilvia" },
+            { szam: "183", nev: "" },
+            { szam: "184", nev: "Nagy Krisztina" },
+            { szam: "186", nev: "Barta Ilona" },
+            { szam: "187", nev: "" },
+            { szam: "191", nev: "Gulyás Ildikó" },
+            { szam: "194", nev: "Karácsony Éva" },
+            { szam: "195", nev: "Kovács Ferenc" },
+            { szam: "196", nev: "Soósné V. Lia" },
+
+            { szam: "201", nev: "Adyné K. Enikő" },
+            { szam: "203", nev: "Buczkó Orsolya" },
+            { szam: "204", nev: "Szöllösi Brigitta" },
+            { szam: "208", nev: "Végh Károly" },
+            { szam: "210", nev: "Bodó Antal" },
+            { szam: "211", nev: "Braun Éva" },
+            { szam: "212", nev: "Kormos Gabriella" },
+            { szam: "214", nev: "Molnár Eszter" },
+            { szam: "218", nev: "Widder László" },
+            { szam: "219", nev: "Tikász András" },
+            { szam: "221", nev: "Némethné P. Stefánia" },
+            { szam: "222", nev: "Gera Ildikó" },
+            { szam: "223", nev: "Zachár Judit" },
+            { szam: "233", nev: "Prófusz Magdolna" },
+            { szam: "235", nev: "Lakatos Tibor" },
+            { szam: "236", nev: "Drofti Endre" },
+            { szam: "237", nev: "Kollár Zsófia" },
+            { szam: "240", nev: "Erdei Éva" },
+            { szam: "254", nev: "Gépész" },
+            { szam: "255", nev: "Gépész" },
+            { szam: "256", nev: "Informatika" },
+            { szam: "265", nev: "" },
+            { szam: "266", nev: "Informatika" },
+
+            { szam: "302", nev: "Nánási Gabriella" },
+            { szam: "303", nev: "Batóné S. Ágnes" },
+            { szam: "305", nev: "Baranné H. Krisztina" },
+            { szam: "306", nev: "Keresztfalvi Katalin" },
+
+            { szam: "Könyvtár", nev: "" },
+
+            { szam: "Testnevelés 1", nev: "" },
+            { szam: "Testnevelés 2", nev: "" },
+            { szam: "Testnevelés 3", nev: "" },
+            { szam: "Testnevelés 4", nev: "" },
+
+            { szam: "Duális", nev: "" }
+
+        ];
+
+
+        /* =================================================
+           ÓRAIDŐK
+        ================================================= */
+
+        const oraIdopontok = [
+
+            ["1. óra", "08:00", "08:45"],
+            ["2. óra", "08:55", "09:40"],
+            ["3. óra", "09:50", "10:35"],
+            ["4. óra", "10:45", "11:30"],
+            ["5. óra", "11:40", "12:25"],
+            ["6. óra", "12:35", "13:20"],
+            ["7. óra", "13:30", "14:15"],
+            ["8. óra", "14:25", "15:10"]
+
+        ];
+
+
+        const napok = [
+            "hetfo",
+            "kedd",
+            "szerda",
+            "csutortok",
+            "pentek"
+        ];
+
+
+        /* =================================================
+           ÓRAREND
+        ================================================= */
+
+        const orarend = {};
+
+
+        osztalyok.forEach(function(osztaly) {
+
+            orarend[osztaly] = {};
+
+
+            napok.forEach(function(nap) {
+
+                orarend[osztaly][nap] =
+                    oraIdopontok.map(function(ora) {
+
+                        return {
+
+                            ora: ora[0],
+
+                            kezdes: ora[1],
+
+                            vege: ora[2],
+
+                            tantargy: "",
+
+                            tanar: "",
+
+                            terem: ""
+
+                        };
+
+                    });
+
+            });
+
+        });
+
+
+        /* =================================================
+           PÉLDA ÓRAADATOK
+           
+           Ezeket később egyszerűen ki lehet cserélni
+           valódi órarend adatokra.
+        ================================================= */
+
+        const peldaOrak = [
+
+            ["Matematika", "Kovács Ferenc", "101"],
+            ["Angol", "Tóth Irén", "105"],
+            ["Informatika", "Szabó Kristóf", "256"],
+            ["Történelem", "Nagy Ferenc", "203"],
+            ["Fizika", "Kiss Csaba", "204"],
+            ["Magyar", "Nagy Krisztina", "201"],
+            ["Testnevelés", "Horváth Zoltán", "Testnevelés 1"],
+            ["Programozás", "Kluka Norbert", "266"]
+
+        ];
+
+
+        /* =================================================
+           ÓRAREND FELTÖLTÉSE
+        ================================================= */
+
+        osztalyok.forEach(function(osztaly) {
+
+            napok.forEach(function(nap) {
+
+                orarend[osztaly][nap].forEach(
+                    function(ora, index) {
+
+                        const adat =
+                            peldaOrak[index % peldaOrak.length];
+
+
+                        ora.tantargy = adat[0];
+
+                        ora.tanar = adat[1];
+
+                        ora.terem = adat[2];
+
+                    }
+                );
+
+            });
+
+        });
+
+
+        /* =================================================
+           OSZTÁLY SELECT FELTÖLTÉSE
+        ================================================= */
+
+        const osztalySelect =
+            document.getElementById("osztaly");
+
+
+        osztalyok.forEach(function(osztaly) {
+
+            const option =
+                document.createElement("option");
+
+
+            option.value = osztaly;
+
+            option.textContent = osztaly;
+
+
+            osztalySelect.appendChild(option);
+
+        });
+
+
+        /* =================================================
+           ÓRAREND MEGJELENÍTÉSE
+        ================================================= */
+
+        const napSelect =
+            document.getElementById("nap");
+
+
+        const tabla =
+            document.getElementById("orarendTabla");
+
+
+        function mutatOrarend() {
+
+            const osztaly =
+                osztalySelect.value;
+
+
+            const nap =
+                napSelect.value;
+
+
+            const adatok =
+                orarend[osztaly][nap];
+
+
+            let html = `
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Óra</th>
+
+                            <th>Időpont</th>
+
+                            <th>Tantárgy</th>
+
+                            <th>Tanár</th>
+
+                            <th>Terem</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+            `;
+
+
+            adatok.forEach(function(ora) {
+
+                html += `
+
+                    <tr>
+
+                        <td class="ora">
+                            ${ora.ora}
+                        </td>
+
+                        <td class="idopont">
+                            ${ora.kezdes} – ${ora.vege}
+                        </td>
+
+                        <td class="tantargy">
+                            ${ora.tantargy}
+                        </td>
+
+                        <td>
+                            👨‍🏫 ${ora.tanar}
+                        </td>
+
+                        <td>
+                            🚪 ${ora.terem}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            });
+
+
+            html += `
+
+                    </tbody>
+
+                </table>
+
+            `;
+
+
+            tabla.innerHTML = html;
+
+        }
+
+
+        osztalySelect.addEventListener(
+            "change",
+            mutatOrarend
+        );
+
+
+        napSelect.addEventListener(
+            "change",
+            mutatOrarend
+        );
+
+
+        /* =================================================
+           OSZTÁLYLISTA
+        ================================================= */
+
+        const osztalyLista =
+            document.getElementById("osztalyLista");
+
+
+        const osztalyDarab =
+            document.getElementById("osztalyDarab");
+
+
+        function mutatOsztalyokat(kereses = "") {
+
+            const eredmeny =
+                osztalyok.filter(function(osztaly) {
+
+                    return osztaly
+                        .toLowerCase()
+                        .includes(
+                            kereses.toLowerCase()
+                        );
+
+                });
+
+
+            osztalyDarab.textContent =
+                `${eredmeny.length} osztály`;
+
+
+            osztalyLista.innerHTML =
+                eredmeny.map(function(osztaly) {
+
+                    return `
+
+                        <div class="card">
+
+                            <h3>
+                                👨‍🎓 ${osztaly}
+                            </h3>
+
+                            <p>
+                                Az osztály órarendjének
+                                megtekintése.
+                            </p>
+
+                            <span class="badge">
+                                Osztály
+                            </span>
+
+                        </div>
+
+                    `;
+
+                }).join("");
+
+        }
+
+
+        document
+            .getElementById("osztalyKereses")
+            .addEventListener(
+                "input",
+                function(event) {
+
+                    mutatOsztalyokat(
+                        event.target.value
+                    );
+
+                }
+            );
+
+
+        /* =================================================
+           TANÁRLISTA
+        ================================================= */
+
+        const tanarLista =
+            document.getElementById("tanarLista");
+
+
+        const tanarDarab =
+            document.getElementById("tanarDarab");
+
+
+        function mutatTanarokat(kereses = "") {
+
+            const eredmeny =
+                tanarok.filter(function(tanar) {
+
+                    return tanar
+                        .toLowerCase()
+                        .includes(
+                            kereses.toLowerCase()
+                        );
+
+                });
+
+
+            tanarDarab.textContent =
+                `${eredmeny.length} tanár`;
+
+
+            tanarLista.innerHTML =
+                eredmeny.map(function(tanar) {
+
+                    return `
+
+                        <div class="card">
+
+                            <h3>
+                                👨‍🏫 ${tanar}
+                            </h3>
+
+                            <p>
+                                UMSZKI tanár
+                            </p>
+
+                            <span class="badge">
+                                Tanár
+                            </span>
+
+                        </div>
+
+                    `;
+
+                }).join("");
+
+        }
+
+
+        document
+            .getElementById("tanarKereses")
+            .addEventListener(
+                "input",
+                function(event) {
+
+                    mutatTanarokat(
+                        event.target.value
+                    );
+
+                }
+            );
+
+
+        /* =================================================
+           TEREMLISTA
+        ================================================= */
+
+        const teremLista =
+            document.getElementById("teremLista");
+
+
+        const teremDarab =
+            document.getElementById("teremDarab");
+
+
+        function mutatTermeket(kereses = "") {
+
+            const eredmeny =
+                termek.filter(function(terem) {
+
+                    const keresheto =
+                        `${terem.szam} ${terem.nev}`
+                            .toLowerCase();
+
+
+                    return keresheto.includes(
+                        kereses.toLowerCase()
+                    );
+
+                });
+
+
+            teremDarab.textContent =
+                `${eredmeny.length} terem`;
+
+
+            teremLista.innerHTML =
+                eredmeny.map(function(terem) {
+
+                    return `
+
+                        <div class="card">
+
+                            <h3>
+                                🚪 ${terem.szam}
+                            </h3>
+
+                            ${
+                                terem.nev
+                                ? `<p>${terem.nev}</p>`
+                                : `<p>Nincs megadott név</p>`
+                            }
+
+                            <span class="badge">
+                                Terem
+                            </span>
+
+                        </div>
+
+                    `;
+
+                }).join("");
+
+        }
+
+
+        document
+            .getElementById("teremKereses")
+            .addEventListener(
+                "input",
+                function(event) {
+
+                    mutatTermeket(
+                        event.target.value
+                    );
+
+                }
+            );
+
+
+        /* =================================================
+           INDÍTÁS
+        ================================================= */
+
+        mutatOrarend();
+
+        mutatOsztalyokat();
+
+        mutatTanarokat();
+
+        mutatTermeket();
+
+    </script>
+
+
+</body>
+
+</html>
+
