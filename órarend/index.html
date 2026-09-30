@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UMSZKI Órarend</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <div class="logo">UMSZKI</div>
+
+    <nav>
+        <a href="#orarend">Órarend</a>
+        <a href="#tanarok">Tanárok</a>
+        <a href="#termek">Termek</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>UMSZKI Órarend</h1>
+    <p>Az iskola osztályainak órarendjei egy helyen.</p>
+</section>
+
+<main>
+
+    <!-- ÓRAREND -->
+    <section id="orarend" class="section">
+
+        <h2>📅 Órarend</h2>
+
+        <div class="controls">
+
+            <label for="osztaly">Osztály:</label>
+
+            <select id="osztaly">
+                <option value="9a">9.A</option>
+                <option value="9b">9.B</option>
+                <option value="10a">10.A</option>
+                <option value="10b">10.B</option>
+                <option value="11a">11.A</option>
+                <option value="11b">11.B</option>
+                <option value="12a">12.A</option>
+                <option value="12b">12.B</option>
+            </select>
+
+            <label for="nap">Nap:</label>
+
+            <select id="nap">
+                <option value="hetfo">Hétfő</option>
+                <option value="kedd">Kedd</option>
+                <option value="szerda">Szerda</option>
+                <option value="csutortok">Csütörtök</option>
+                <option value="pentek">Péntek</option>
+            </select>
+
+        </div>
+
+        <div id="orarendTabla"></div>
+
+    </section>
+
+
+    <!-- TANÁROK -->
+    <section id="tanarok" class="section">
+
+        <h2>👨‍🏫 Tanárok</h2>
+
+        <input
+            type="text"
+            id="tanarKereses"
+            placeholder="Tanár keresése..."
+        >
+
+        <div id="tanarLista" class="card-grid"></div>
+
+    </section>
+
+
+    <!-- TERMEK -->
+    <section id="termek" class="section">
+
+        <h2>🏫 Termek</h2>
+
+        <input
+            type="text"
+            id="teremKereses"
+            placeholder="Terem keresése..."
+        >
+
+        <div id="teremLista" class="card-grid"></div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    <p>© 2026 UMSZKI Órarend</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
