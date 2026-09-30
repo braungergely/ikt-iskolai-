@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>UMSZKI Órarend</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #eef2f7;
+            color: #172033;
+        }
+
+        /* FEJLÉC */
+
+        header {
+            background: #0f172a;
+            color: white;
+
+            min-height: 70px;
+            padding: 15px 7%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+
+        nav {
+            display: flex;
+            gap: 25px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #38bdf8;
+        }
+
+        /* HERO */
+
+        .hero {
+            background: linear-gradient(
+                135deg,
+                #0f172a,
+                #0369a1
+            );
+
+            color: white;
+            text-align: center;
+
+            padding: 80px 20px;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 19px;
+            color: #dbeafe;
+        }
+
+        /* MAIN */
+
+        main {
+            width: 92%;
+            max-width: 1250px;
+            margin: auto;
+        }
+
+        .section {
+            background: white;
+
+            margin: 40px 0;
+            padding: 30px;
+
+            border-radius: 16px;
+
+            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
+        }
+
+        .section h2 {
+            margin-bottom: 25px;
+            color: #0f172a;
+        }
+
+        /* KERESŐK */
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+
+            margin-bottom: 25px;
+        }
+
+        select,
+        input {
+            padding: 12px 15px;
+
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        select:focus,
+        input:focus {
+            border-color: #0284c7;
+        }
+
+        /* ÓRAREND */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #0284c7;
+            color: white;
+            padding: 15px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        tr:hover td {
+            background: #f0f9ff;
+        }
+
+        .ora {
+            color: #0369a1;
+            font-weight: bold;
+        }
+
+        .tantargy {
+            font-weight: bold;
+        }
+
+        /* KÁRTYÁK */
+
+        .card-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
+
+            gap: 20px;
+        }
+
+        .card {
+            background: #f8fafc;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            border-left: 5px solid #0284c7;
+
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #0369a1;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            margin: 7px 0;
+            color: #475569;
+        }
+
+        #tanarKereses,
+        #teremKereses {
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: #0f172a;
+            color: white;
+
+            text-align: center;
+
+            padding: 25px;
+
+            margin-top: 50px;
+        }
+
+        /* MOBIL */
+
+        @media (max-width: 700px) {
+
+            header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav {
+                gap: 15px;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            th,
+            td {
+                padding: 9px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- =========================
+     FEJLÉC
+========================= -->
+
+<header>
+
+    <div class="logo">
+        UMSZKI
+    </div>
+
+    <nav>
+        <a href="#orarend">Órarend</a>
+        <a href="#tanarok">Tanárok</a>
+        <a href="#termek">Termek</a>
+    </nav>
+
+</header>
+
+
+<!-- =========================
+     FŐCÍM
+========================= -->
+
+<section class="hero">
+
+    <h1>UMSZKI Órarend</h1>
+
+    <p>
+        Az iskola osztályainak órarendje,
+        tanárai és termei egy helyen.
+    </p>
+
+</section>
+
+
+<main>
+
+<!-- =========================
+     ÓRAREND
+========================= -->
+
+<section id="orarend" class="section">
+
+    <h2>📅 Órarend</h2>
+
+    <div class="controls">
+
+        <label for="osztaly">
+            Osztály:
+        </label>
+
+        <select id="osztaly">
+
+            <option value="9a">9.A</option>
+            <option value="9b">9.B</option>
+
+            <option value="10a">10.A</option>
+            <option value="10b">10.B</option>
+
+            <option value="11a">11.A</option>
+            <option value="11b">11.B</option>
+
+            <option value="12a">12.A</option>
+            <option value="12b">12.B</option>
+
+        </select>
+
+
+        <label for="nap">
+            Nap:
+        </label>
+
+        <select id="nap">
+
+            <option value="hetfo">
+                Hétfő
+            </option>
+
+            <option value="kedd">
+                Kedd
+            </option>
+
+            <option value="szerda">
+                Szerda
+            </option>
+
+            <option value="csutortok">
+                Csütörtök
+            </option>
+
+            <option value="pentek">
+                Péntek
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div
+        id="orarendTabla"
+        class="table-container">
+    </div>
+
+</section>
+
+
+<!-- =========================
+     TANÁROK
+========================= -->
+
+<section id="tanarok" class="section">
+
+    <h2>👨‍🏫 Tanárok</h2>
+
+    <input
+        type="text"
+        id="tanarKereses"
+        placeholder="Tanár keresése..."
+    >
+
+    <div
+        id="tanarLista"
+        class="card-grid">
+    </div>
+
+</section>
+
+
+<!-- =========================
+     TERMEK
+========================= -->
+
+<section id="termek" class="section">
+
+    <h2>🏫 Termek</h2>
+
+    <input
+        type="text"
+        id="teremKereses"
+        placeholder="Terem keresése..."
+    >
+
+    <div
+        id="teremLista"
+        class="card-grid">
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    <p>
+        © 2026 UMSZKI Órarend
+    </p>
+
+</footer>
+
+
+<script>
+
+/* ==================================================
+   ÓRAREND ADATOK
+================================================== */
+
+const orarendek = {
+
+    "9a": {
+
+        hetfo: [
+            ["1. óra", "Matematika", "Kovács Anna", "101"],
+            ["2. óra", "Magyar nyelv", "Nagy Péter", "203"],
+            ["3. óra", "Történelem", "Kiss Béla", "203"],
+            ["4. óra", "Informatika", "Szabó Gábor", "IKT 1"],
+            ["5. óra", "Angol nyelv", "Tóth Éva", "105"],
+            ["6. óra", "Testnevelés", "Horváth Zoltán", "Torna"]
+        ],
+
+        kedd: [
+            ["1. óra", "Fizika", "Kiss Béla", "204"],
+            ["2. óra", "Matematika", "Kovács Anna", "101"],
+            ["3. óra", "Angol nyelv", "Tóth Éva", "105"],
+            ["4. óra", "Informatika", "Szabó Gábor", "IKT 1"],
+            ["5. óra", "Magyar nyelv", "Nagy Péter", "203"]
+        ],
+
+        szerda: [
+            ["1. óra", "Történelem", "Kiss Béla", "203"],
+            ["2. óra", "Matematika", "Kovács Anna", "101"],
+            ["3. óra", "Programozás", "Szabó Gábor", "IKT 2"],
+            ["4. óra", "Angol nyelv", "Tóth Éva", "105"],
+            ["5. óra", "Testnevelés", "Horváth Zoltán", "Torna"]
+        ],
+
+        csutortok: [
+            ["1. óra", "Magyar nyelv", "Nagy Péter", "203"],
+            ["2. óra", "Fizika", "Kiss Béla", "204"],
+            ["3. óra", "Informatika", "Szabó Gábor", "IKT 1"],
+            ["4. óra", "Matematika", "Kovács Anna", "101"]
+        ],
+
+        pentek: [
+            ["1. óra", "Angol nyelv", "Tóth Éva", "105"],
+            ["2. óra", "Matematika", "Kovács Anna", "101"],
+            ["3. óra", "Történelem", "Kiss Béla", "203"],
+            ["4. óra", "Testnevelés", "Horváth Zoltán", "Torna"]
+        ]
+    },
+
+
+    "9b": {
+
+        hetfo: [
+            ["1. óra", "Informatika", "Szabó Gábor", "IKT 1"],
+            ["2. óra", "Matematika", "Kovács Anna", "101"],
+            ["3. óra", "Angol nyelv", "Tóth Éva", "105"],
+            ["4. óra", "Történelem", "Kiss Béla", "203"],
+            ["5. óra", "Fizika", "Kiss Béla", "204"]
+        ],
+
+        kedd: [
+            ["1. óra", "Magyar nyelv", "Nagy Péter", "203"],
+            ["2. óra", "Matematika", "Kovács Anna", "101"],
+            ["3. óra", "Informatika", "Szabó Gábor", "IKT 2"],
+            ["4. óra", "Angol nyelv", "Tóth Éva", "105"],
+            ["5. óra", "Testnevelés", "Horváth Zoltán", "Torna"]
+        ],
+
+        szerda: [
+            ["1. óra", "Fizika", "Kiss Béla", "204"],
+            ["2. óra", "Történelem", "Kiss Béla", "203"],
+            ["3. óra", "Matematika", "Kovács Anna", "101"],
+            ["4. óra", "Magyar nyelv", "Nagy Péter", "203"]
+        ],
+
+        csutortok: [
+            ["1. óra", "Angol nyelv", "Tóth Éva", "105"],
+            ["2. óra", "Informatika", "Szabó Gábor", "IKT 1"],
+            ["3. óra", "Matematika", "Kovács Anna", "101"],
+            ["4. óra", "Testnevelés", "Horváth Zoltán", "Torna"]
+        ],
+
+        pentek: [
+            ["1. óra", "Történelem", "Kiss Béla", "203"],
+            ["2. óra", "Magyar nyelv", "Nagy Péter", "203"],
+            ["3. óra", "Fizika", "Kiss Béla", "204"],
+            ["4. óra", "Informatika", "Szabó Gábor", "IKT 2"]
+        ]
+    }
+
+};
+
+
+/* ==================================================
+   TÖBBI OSZTÁLY
+================================================== */
+
+const osztalyok = [
+    "10a",
+    "10b",
+    "11a",
+    "11b",
+    "12a",
+    "12b"
+];
+
+
+const alapOrak = [
+
+    ["1. óra", "Matematika", "Kovács Anna", "101"],
+
+    ["2. óra", "Magyar nyelv", "Nagy Péter", "203"],
+
+    ["3. óra", "Történelem", "Kiss Béla", "203"],
+
+    ["4. óra", "Informatika", "Szabó Gábor", "IKT 1"],
+
+    ["5. óra", "Angol nyelv", "Tóth Éva", "105"]
+
+];
+
+
+const napok = [
+    "hetfo",
+    "kedd",
+    "szerda",
+    "csutortok",
+    "pentek"
+];
+
+
+osztalyok.forEach(osztaly => {
+
+    orarendek[osztaly] = {};
+
+    napok.forEach(nap => {
+
+        orarendek[osztaly][nap] =
+            [...alapOrak];
+
+    });
+
+});
+
+
+/* ==================================================
+   ÓRAREND MEGJELENÍTÉSE
+================================================== */
+
+const osztalySelect =
+    document.getElementById("osztaly");
+
+const napSelect =
+    document.getElementById("nap");
+
+const tabla =
+    document.getElementById("orarendTabla");
+
+
+function mutatOrarend() {
+
+    const osztaly =
+        osztalySelect.value;
+
+    const nap =
+        napSelect.value;
+
+    const adatok =
+        orarendek[osztaly][nap];
+
+
+    let html = `
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Óra</th>
+                    <th>Tantárgy</th>
+                    <th>Tanár</th>
+                    <th>Terem</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+    `;
+
+
+    adatok.forEach(ora => {
+
+        html += `
+
+            <tr>
+
+                <td class="ora">
+                    ${ora[0]}
+                </td>
+
+                <td class="tantargy">
+                    ${ora[1]}
+                </td>
+
+                <td>
+                    👨‍🏫 ${ora[2]}
+                </td>
+
+                <td>
+                    🏫 ${ora[3]}
+                </td>
+
+            </tr>
+
+        `;
+
+    });
+
+
+    html += `
+
+            </tbody>
+
+        </table>
+
+    `;
+
+
+    tabla.innerHTML = html;
+}
+
+
+/* ==================================================
+   TANÁROK
+================================================== */
+
+const tanarok = [
+
+    {
+        nev: "Kovács Anna",
+        tantargy: "Matematika",
+        email: "kovacs.anna@umszki.hu"
+    },
+
+    {
+        nev: "Nagy Péter",
+        tantargy: "Magyar nyelv és irodalom",
+        email: "nagy.peter@umszki.hu"
+    },
+
+    {
+        nev: "Kiss Béla",
+        tantargy: "Történelem és fizika",
+        email: "kiss.bela@umszki.hu"
+    },
+
+    {
+        nev: "Szabó Gábor",
+        tantargy: "Informatika és programozás",
+        email: "szabo.gabor@umszki.hu"
+    },
+
+    {
+        nev: "Tóth Éva",
+        tantargy: "Angol nyelv",
+        email: "toth.eva@umszki.hu"
+    },
+
+    {
+        nev: "Horváth Zoltán",
+        tantargy: "Testnevelés",
+        email: "horvath.zoltan@umszki.hu"
+    }
+
+];
+
+
+function mutatTanarokat(kereses = "") {
+
+    const lista =
+        document.getElementById("tanarLista");
+
+
+    const eredmeny =
+        tanarok.filter(tanar =>
+
+            tanar.nev
+                .toLowerCase()
+                .includes(
+                    kereses.toLowerCase()
+                )
+
+        );
+
+
+    lista.innerHTML =
+        eredmeny.map(tanar => `
+
+            <div class="card">
+
+                <h3>
+                    👨‍🏫 ${tanar.nev}
+                </h3>
+
+                <p>
+                    📚 ${tanar.tantargy}
+                </p>
+
+                <p>
+                    ✉️ ${tanar.email}
+                </p>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+/* ==================================================
+   TERMEK
+================================================== */
+
+const termek = [
+
+    {
+        nev: "101-es terem",
+        tipus: "Tanterem",
+        emelet: "1. emelet"
+    },
+
+    {
+        nev: "105-ös terem",
+        tipus: "Nyelvi terem",
+        emelet: "1. emelet"
+    },
+
+    {
+        nev: "203-as terem",
+        tipus: "Tanterem",
+        emelet: "2. emelet"
+    },
+
+    {
+        nev: "204-es terem",
+        tipus: "Fizika terem",
+        emelet: "2. emelet"
+    },
+
+    {
+        nev: "IKT 1",
+        tipus: "Informatika terem",
+        emelet: "1. emelet"
+    },
+
+    {
+        nev: "IKT 2",
+        tipus: "Informatika terem",
+        emelet: "2. emelet"
+    },
+
+    {
+        nev: "Tornaterem",
+        tipus: "Testnevelés",
+        emelet: "Földszint"
+    }
+
+];
+
+
+function mutatTermeket(kereses = "") {
+
+    const lista =
+        document.getElementById("teremLista");
+
+
+    const eredmeny =
+        termek.filter(terem =>
+
+            terem.nev
+                .toLowerCase()
+                .includes(
+                    kereses.toLowerCase()
+                )
+
+        );
+
+
+    lista.innerHTML =
+        eredmeny.map(terem => `
+
+            <div class="card">
+
+                <h3>
+                    🏫 ${terem.nev}
+                </h3>
+
+                <p>
+                    📌 ${terem.tipus}
+                </p>
+
+                <p>
+                    📍 ${terem.emelet}
+                </p>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+/* ==================================================
+   ESEMÉNYEK
+================================================== */
+
+osztalySelect.addEventListener(
+    "change",
+    mutatOrarend
+);
+
+
+napSelect.addEventListener(
+    "change",
+    mutatOrarend
+);
+
+
+document
+    .getElementById("tanarKereses")
+    .addEventListener(
+        "input",
+        event => {
+
+            mutatTanarokat(
+                event.target.value
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("teremKereses")
+    .addEventListener(
+        "input",
+        event => {
+
+            mutatTermeket(
+                event.target.value
+            );
+
+        }
+    );
+
+
+/* ==================================================
+   INDÍTÁS
+================================================== */
+
+mutatOrarend();
+
+mutatTanarokat();
+
+mutatTermeket();
+
+</script>
+
+</body>
+</html>
